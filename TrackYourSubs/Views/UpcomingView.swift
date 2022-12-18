@@ -19,7 +19,7 @@ struct UpcomingView: View {
                 .foregroundColor(.gray)
         }
         .padding(10)
-        .background(.thickMaterial)
+        .background(Color("Tiles"))
         .clipShape(Capsule())
     }
 }

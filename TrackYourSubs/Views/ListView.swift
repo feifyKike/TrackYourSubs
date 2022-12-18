@@ -11,6 +11,8 @@ struct ListView: View {
     @EnvironmentObject var subViewModel: SubViewModel
     @State private var action: Bool = false
     @State private var firstAction: Bool = false
+    @State private var showNotifications: Bool = false
+    @State private var showSuggestion: Bool = false
     
     init() {
         // Remove any spacing between list
@@ -29,8 +31,10 @@ struct ListView: View {
                     HStack {
                         if margin > 0 {
                             Image(systemName: "arrow.up").foregroundColor(.green)
-                        } else {
+                        } else if margin < 0 {
                             Image(systemName: "arrow.down").foregroundColor(.red)
+                        } else {
+                            Image(systemName: "minus").foregroundColor(.yellow)
                         }
                         HStack(spacing: 0) {
                             Text("Budget: $\(subViewModel.budget, specifier: "%.2f")")
@@ -102,20 +106,32 @@ struct ListView: View {
             .navigationTitle("Your Subscriptions")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
+                    // Preferences
                     NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType), label: {
                         Label("Preferences", systemImage: "gearshape")
                     })
-                    Menu {
-                        SuggestionView()
-                    }
-                    label: {
-                        Label("Suggestion", systemImage: "lightbulb")
-                            .foregroundColor(Color.accentColor)
-                    }
+                    // Suggestions
+                    Button(action: {
+                        showSuggestion.toggle()
+                    }, label: {
+                        Label("Suggestion", systemImage: "lightbulb").foregroundColor(Color.accentColor)
+                    })
+                        .sheet(isPresented: $showSuggestion) {
+                            SuggestionView()
+                        }
                     
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Label("Suggestion", systemImage: "bell").foregroundColor(Color.accentColor)
+                    // Notification Center
+                    Button(action: {
+                        showNotifications.toggle()
+                    }, label: {
+                        Label("Notifications", systemImage: "bell").foregroundColor(Color.accentColor)
+                    })
+                        .sheet(isPresented: $showNotifications) {
+                            NotificationView()
+                        }
+                    // Add
                     NavigationLink(destination: AddView(), label: {
                         Label("Add", systemImage: "plus.circle")
                     })
@@ -146,7 +162,6 @@ struct ListView_Previews: PreviewProvider {
         NavigationView {
             ListView()
         }
-        .preferredColorScheme(.dark)
         .environmentObject(SubViewModel())
         
     }
