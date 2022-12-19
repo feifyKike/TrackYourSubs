@@ -41,11 +41,9 @@ struct NotificationView: View {
                             .shadow(radius: 5)
                             .padding()
                     }
+                    Spacer()
                 }
-                
-                Spacer()
             }
-            .background(Color("Tiles"))
             .navigationBarTitle(Text("Notifications"), displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -62,7 +60,7 @@ struct NotificationView: View {
 struct NotificationView_Previews: PreviewProvider {
     static var previews: some View {
         NotificationView()
-            .preferredColorScheme(.dark)
+            .preferredColorScheme(.light)
             .environmentObject(SubViewModel())
     }
 }

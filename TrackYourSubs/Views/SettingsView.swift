@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State var filterOption: String = ""
     @State var orderOption: String = ""
     @State var budgetOption: String = ""
+    @State var notificationsAllowed: Bool = false
     
     init(filter: String, order: String, budgetSelection: String) {
         self.filter = filter
@@ -77,6 +78,9 @@ struct SettingsView: View {
             .pickerStyle(.segmented)
             .onChange(of: budgetOption) { _ in
                 subViewModel.budgetType = budgetOption
+            }
+            Section(header: Text("Notifications"), footer: Text("A notification will be sent out the day of the due date for each subscription.")) {
+                Toggle("Allow Notifications", isOn: $notificationsAllowed)
             }
             Section(header: Text("About")) {
                 HStack {

@@ -14,10 +14,8 @@ struct TrackYourSubsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                ListView()
-            }
-            .environmentObject(subViewModel)
+            MainView()
+                .environmentObject(subViewModel)
         }
     }
 }

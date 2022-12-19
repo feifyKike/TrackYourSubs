@@ -25,6 +25,7 @@ struct SuggestionView: View {
                         .background(Color("Tiles"))
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         .shadow(radius: 5)
+                        .padding()
                     Spacer()
                 }  else if budgetToUse > subViewModel.budget {
                     let toRemove: [SubItem] = subViewModel.save()

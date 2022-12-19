@@ -20,7 +20,7 @@ struct ListView: View {
     }
     
     var body: some View {
-        if !subViewModel.tutorial {
+        NavigationView {
             VStack {
                 // Budget Section
                 NavigationLink(destination: EditBudgetView(), isActive: $action) {
@@ -41,14 +41,14 @@ struct ListView: View {
                                 .font(.title)
                             Text("\(subViewModel.budgetType == "monthly" ? "/m" : "/yr")")
                                 .foregroundColor(.secondary)
-                
+                            
                         }
                         Spacer()
                         Text("Edit")
                             .foregroundColor(.accentColor)
                             .onTapGesture {
                                 self.action.toggle()
-                        }
+                            }
                     }
                     HStack {
                         let indicator = margin > 0 ? "remaining" : "over"
@@ -103,56 +103,41 @@ struct ListView: View {
                 }
                 Spacer()
             }
-            .navigationTitle("Your Subscriptions")
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
-                    // Preferences
-                    NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType), label: {
-                        Label("Preferences", systemImage: "gearshape")
-                    })
-                    // Suggestions
-                    Button(action: {
-                        showSuggestion.toggle()
-                    }, label: {
-                        Label("Suggestion", systemImage: "lightbulb").foregroundColor(Color.accentColor)
-                    })
+                .navigationTitle("Your Subscriptions")
+                .toolbar {
+                    ToolbarItemGroup(placement: .navigationBarLeading) {
+                        // Preferences
+                        NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType), label: {
+                            Label("Preferences", systemImage: "gearshape")
+                        })
+                        // Suggestions
+                        Button(action: {
+                            showSuggestion.toggle()
+                        }, label: {
+                            Label("Suggestion", systemImage: "lightbulb").foregroundColor(Color.accentColor)
+                        })
                         .sheet(isPresented: $showSuggestion) {
                             SuggestionView()
                         }
-                    
-                }
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    // Notification Center
-                    Button(action: {
-                        showNotifications.toggle()
-                    }, label: {
-                        Label("Notifications", systemImage: "bell").foregroundColor(Color.accentColor)
-                    })
+                        
+                    }
+                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        // Notification Center
+                        Button(action: {
+                            showNotifications.toggle()
+                        }, label: {
+                            Label("Notifications", systemImage: "bell").foregroundColor(Color.accentColor)
+                        })
                         .sheet(isPresented: $showNotifications) {
                             NotificationView()
                         }
-                    // Add
-                    NavigationLink(destination: AddView(), label: {
-                        Label("Add", systemImage: "plus.circle")
-                    })
-                    
+                        // Add
+                        NavigationLink(destination: AddView(), label: {
+                            Label("Add", systemImage: "plus.circle")
+                        })
+                        
+                    }
                 }
-            }
-        } else {
-            // Tutorial
-            VStack {
-                NavigationLink(destination: AddView(), isActive: $firstAction) {
-                    EmptyView()
-                }
-                Text("To a place where you can manage subscriptions, lower your bills, and stay on top of your financial spending. With this simple to use app you will not want to go back to making spreadsheets.").padding()
-                Button("Get Started", action: {
-                    self.firstAction.toggle()
-                })
-                    .buttonStyle(.borderedProminent)
-                    .font(.title3)
-                Spacer()
-            }
-            .navigationTitle("🎉 Welcome!")
         }
     }
 }
