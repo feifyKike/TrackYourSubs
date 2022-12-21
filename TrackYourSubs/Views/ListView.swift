@@ -21,7 +21,7 @@ struct ListView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
+            ScrollView {
                 // Budget Section
                 NavigationLink(destination: EditBudgetView(), isActive: $action) {
                     EmptyView()

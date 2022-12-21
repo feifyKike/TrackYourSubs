@@ -60,7 +60,7 @@ struct EditView: View {
     }
     
     func saveButtonPressed() {
-        subViewModel.updateSub(sub: sub, newName: subName, newAmount: Float(subAmount) ?? 0.0, newFreq: subFreq, newPurchaseDate: subPurchaseDate, newCat: subCategory, newRank: subRank)
+        subViewModel.updateSub(sub: sub, newName: subName, newAmount: Double(subAmount) ?? 0.0, newFreq: subFreq, newPurchaseDate: subPurchaseDate, newCat: subCategory, newRank: subRank)
         subViewModel.determineOrder()
         presentationMode.wrappedValue.dismiss()
     }

@@ -10,13 +10,13 @@ import Foundation
 struct SubItem: Identifiable, Comparable, Codable, Hashable {
     let id: String
     let name: String
-    let amount: Float
+    let amount: Double
     let freq: String
     let purchaseDate: Date
     let category: String
     let rank: Int
     
-    init(id: String = UUID().uuidString, name: String, amount: Float, freq: String, purchaseDate: Date, category: String, rank: Int) {
+    init(id: String = UUID().uuidString, name: String, amount: Double, freq: String, purchaseDate: Date, category: String, rank: Int) {
         self.id = id
         self.name = name
         self.amount = amount
@@ -26,7 +26,7 @@ struct SubItem: Identifiable, Comparable, Codable, Hashable {
         self.rank = rank
     }
     
-    func update(newName: String, newAmount: Float, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int) -> SubItem {
+    func update(newName: String, newAmount: Double, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int) -> SubItem {
         return SubItem(id: id, name: newName, amount: newAmount, freq: newFreq, purchaseDate: newPurchaseDate, category: newCat, rank: newRank)
     }
     

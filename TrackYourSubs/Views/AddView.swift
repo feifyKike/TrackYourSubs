@@ -49,14 +49,14 @@ struct AddView: View {
                 ForEach(subViewModel.categories, id: \.self) { c in
                     Text(c).tag(c)
                 }
-                HStack {
-                    TextField("New Category", text: $newCategory)
-                    Button(action: {
-                        subViewModel.addCategory(newCategory: newCategory)
-                        newCategory = ""
-                    }, label: {Text("Add")})
-                        .disabled(newCategory.isEmpty)
-                }
+//                HStack {
+//                    TextField("New Category", text: $newCategory)
+//                    Button(action: {
+//                        subViewModel.addCategory(newCategory: newCategory)
+//                        newCategory = ""
+//                    }, label: {Text("Add")})
+//                        .disabled(newCategory.isEmpty)
+//                }
             }
             // level of importance 1-5
             Stepper(value: $subRank, in: 1...5) {
@@ -77,7 +77,7 @@ struct AddView: View {
         if subViewModel.tutorial {
             subViewModel.tutorial = false
         }
-        subViewModel.addSub(name: subName, amount: Float(subAmount) ?? 0.0, freq: subFreq, purchaseDate: subPurchaseDate, category: subCategory, rank: subRank)
+        subViewModel.addSub(name: subName, amount: Double(subAmount) ?? 0.0, freq: subFreq, purchaseDate: subPurchaseDate, category: subCategory, rank: subRank)
         subViewModel.determineOrder()
         presentationMode.wrappedValue.dismiss()
     }

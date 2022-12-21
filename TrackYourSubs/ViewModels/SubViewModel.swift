@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+typealias CategorySums = [(String, Double)]
 class SubViewModel: ObservableObject {
     let defaults = UserDefaults.standard
     @Published var subscriptions: [SubItem] = [] {
@@ -15,7 +16,7 @@ class SubViewModel: ObservableObject {
             saveSub()
         }
     }
-    @Published var budget: Float = 0.0 {
+    @Published var budget: Double = 0.0 {
         didSet {
             defaults.set(budget, forKey: "budgetKey")
         }
@@ -51,7 +52,7 @@ class SubViewModel: ObservableObject {
     
     init() {
         self.tutorial = defaults.bool(forKey: "tutorial")
-        self.budget = defaults.float(forKey: "budgetKey")
+        self.budget = defaults.double(forKey: "budgetKey")
         self.budgetType = defaults.string(forKey: "budgetTypeKey") ?? "monthly"
         self.categories = defaults.object(forKey: "categoriesKey") as? [String] ?? ["Uncategorized"]
         self.order = defaults.string(forKey: "orderKey") ?? ""
@@ -82,12 +83,12 @@ class SubViewModel: ObservableObject {
         }
     }
     
-    func addSub(name: String, amount: Float, freq: String, purchaseDate: Date, category: String, rank: Int) {
+    func addSub(name: String, amount: Double, freq: String, purchaseDate: Date, category: String, rank: Int) {
         let newSub = SubItem(name: name, amount: amount, freq: freq, purchaseDate: purchaseDate, category: category, rank: rank)
         subscriptions.append(newSub)
     }
     
-    func updateSub(sub: SubItem, newName: String, newAmount: Float, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int) {
+    func updateSub(sub: SubItem, newName: String, newAmount: Double, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int) {
         if let index = subscriptions.firstIndex(where: { $0.id == sub.id}) {
             subscriptions[index] = sub.update(newName: newName, newAmount: newAmount, newFreq: newFreq, newPurchaseDate: newPurchaseDate, newCat: newCat, newRank: newRank)
         }
@@ -148,9 +149,9 @@ class SubViewModel: ObservableObject {
         return subscriptions
     }
      
-    func ribbonData() -> [Float] {
+    func ribbonData() -> [Double] {
         // monthly, yearly
-        var data: [Float] = [0.0, 0.0]
+        var data: [Double] = [0.0, 0.0]
         for s in subscriptions {
             if s.freq.lowercased() == "monthly" {
                 data[0] += s.amount
@@ -164,11 +165,11 @@ class SubViewModel: ObservableObject {
         return data
     }
     
-    func setBudget(newBudget: Float) {
+    func setBudget(newBudget: Double) {
         budget = newBudget
     }
     
-    func budgetMargin() -> Float {
+    func budgetMargin() -> Double {
         var margin = budget - ribbonData()[0]
         if budgetType == "annually" {
             margin = budget - ribbonData()[1]
@@ -228,8 +229,8 @@ class SubViewModel: ObservableObject {
         defaults.set(categories, forKey: "categoriesKey")
     }
     
-    func sumComb(arr: [SubItem], target: Float, partial: [SubItem]) {
-        var sum: Float = 0.0
+    func sumComb(arr: [SubItem], target: Double, partial: [SubItem]) {
+        var sum: Double = 0.0
         for fee in partial {
             sum += fee.amount
         }
@@ -250,8 +251,8 @@ class SubViewModel: ObservableObject {
     }
     
     func save() -> [SubItem] {
-        let rData: [Float] = ribbonData()
-        var target: Float = 0.0
+        let rData: [Double] = ribbonData()
+        var target: Double = 0.0
         let emptyArr: [SubItem] = []
         var arrToUse: [SubItem] = []
         if budgetType == "monthly" {
@@ -271,20 +272,20 @@ class SubViewModel: ObservableObject {
         }
         sumComb(arr: arrToUse, target: target, partial: emptyArr)
         
-        var min: Float = Float(Int.max)
-        var closest: Float = Float(Int.max)
+        var min: Double = Double(Int.max)
+        var closest: Double = Double(Int.max)
         var minIndex: Int = 0
         
         for i in 0..<combinations.count {
             var curr: Int = 0
-            var curr2: Float = 0.0
+            var curr2: Double = 0.0
             for fee in combinations[i] {
                 curr += fee.rank
                 curr2 += fee.amount
             }
-            let average: Float = Float(curr / combinations.count)
+            let average: Double = Double(curr / combinations.count)
             if average <= min && curr2 < closest {
-                min = Float(curr)
+                min = Double(curr)
                 closest = curr2
                 minIndex = i
             }
@@ -319,5 +320,21 @@ class SubViewModel: ObservableObject {
         let formattedPrice = String(priceStr[priceStr.startIndex..<priceStr.index(priceStr.startIndex, offsetBy: match.upperBound)])
 
         return formattedPrice
+    }
+    
+    func spendingByCategory() -> CategorySums {
+        guard !subscriptions.isEmpty else { return [] }
+        
+        var categorySums = CategorySums()
+        
+        for category in categories {
+            let matchingSubs = subscriptions.filter {
+                $0.category == category
+            }.map { $0.amount }
+            
+           categorySums.append((category, matchingSubs.reduce(0, +)))
+        }
+        
+        return categorySums
     }
 }

@@ -35,7 +35,7 @@ struct EditBudgetView: View {
     }
     func saveBudgetPressed() {
         // to implement
-        subViewModel.setBudget(newBudget: Float(fieldBudget) ?? 0.0)
+        subViewModel.setBudget(newBudget: Double(fieldBudget) ?? 0.0)
         presentationMode.wrappedValue.dismiss()
     }
     func setFieldBudget() {
