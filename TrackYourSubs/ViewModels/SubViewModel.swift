@@ -60,6 +60,7 @@ class SubViewModel: ObservableObject {
         getSubs()
     }
     
+    // Working with Subscriptions
     func getSubs() {
 //        let newSubs = [
 //            SubItem(name: "Youtube", amount: 12.0, freq: "monthly", purchaseDate: Date(), category: "Uncategorized", rank: 3),
@@ -100,6 +101,7 @@ class SubViewModel: ObservableObject {
         }
     }
     
+    // Filtering & Ordering
     func orderByPrice() {
         // order by price - descending
         subscriptions = subscriptions.sorted().reversed()
@@ -148,7 +150,8 @@ class SubViewModel: ObservableObject {
         }
         return subscriptions
     }
-     
+    
+    // Budgeting & Other Stats
     func ribbonData() -> [Double] {
         // monthly, yearly
         var data: [Double] = [0.0, 0.0]
@@ -217,6 +220,7 @@ class SubViewModel: ObservableObject {
         return dict
     }
     
+    // Categories & PayStamps
     func removeCategory(categoryIndex: Int) {
         categories.remove(at: categoryIndex)
     }
@@ -229,6 +233,13 @@ class SubViewModel: ObservableObject {
         defaults.set(categories, forKey: "categoriesKey")
     }
     
+    func addPayStamp(sub: SubItem) {
+        if let index = subscriptions.firstIndex(where: { $0.id == sub.id}) {
+            subscriptions[index] = sub.update(newName: sub.name, newAmount: sub.amount, newFreq: sub.freq, newPurchaseDate: sub.purchaseDate, newCat: sub.category, newRank: sub.rank, payStamp: sub.payStamp + [Date.now])
+        }
+    }
+    
+    // Suggestion Algorithm
     func sumComb(arr: [SubItem], target: Double, partial: [SubItem]) {
         var sum: Double = 0.0
         for fee in partial {
@@ -322,6 +333,7 @@ class SubViewModel: ObservableObject {
         return formattedPrice
     }
     
+    // Stats Page Calculations
     func spendingByCategory() -> CategorySums {
         guard !subscriptions.isEmpty else { return [] }
         
@@ -337,4 +349,23 @@ class SubViewModel: ObservableObject {
         
         return categorySums
     }
+    
+    func importanceIndex() -> Int {
+        let totalImportance = Double(subscriptions.count) * 5.0
+        
+        if totalImportance == 0 {
+            return 0
+        }
+        
+        var calcImportance = 0.0
+        for sub in subscriptions {
+            calcImportance += Double(sub.rank)
+        }
+        
+        return Int((calcImportance / totalImportance) * 100.0)
+    }
+    
+    // Paying Subscriptions Logic
+    
+    
 }

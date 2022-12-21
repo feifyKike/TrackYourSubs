@@ -15,8 +15,9 @@ struct SubItem: Identifiable, Comparable, Codable, Hashable {
     let purchaseDate: Date
     let category: String
     let rank: Int
+    let payStamp: [Date]
     
-    init(id: String = UUID().uuidString, name: String, amount: Double, freq: String, purchaseDate: Date, category: String, rank: Int) {
+    init(id: String = UUID().uuidString, name: String, amount: Double, freq: String, purchaseDate: Date, category: String, rank: Int, payStamp: [Date] = []) {
         self.id = id
         self.name = name
         self.amount = amount
@@ -24,9 +25,10 @@ struct SubItem: Identifiable, Comparable, Codable, Hashable {
         self.purchaseDate = purchaseDate
         self.category = category
         self.rank = rank
+        self.payStamp = payStamp
     }
     
-    func update(newName: String, newAmount: Double, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int) -> SubItem {
+    func update(newName: String, newAmount: Double, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int, payStamp: [Date] = []) -> SubItem {
         return SubItem(id: id, name: newName, amount: newAmount, freq: newFreq, purchaseDate: newPurchaseDate, category: newCat, rank: newRank)
     }
     

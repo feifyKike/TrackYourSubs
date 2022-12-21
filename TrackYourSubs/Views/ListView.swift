@@ -75,7 +75,11 @@ struct ListView: View {
                 }
                 
                 // Subscriptions
-                if subViewModel.filterSubs().isEmpty {
+                if subViewModel.subscriptions.isEmpty {
+                    Text("No subscriptions yet. Press + in the top right corner to add one.")
+                        .foregroundColor(.gray)
+                        .padding()
+                } else if subViewModel.filterSubs().isEmpty {
                     Text("No Subscriptions for this filter.")
                         .foregroundColor(.secondary)
                         .padding()
@@ -96,10 +100,6 @@ struct ListView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         .shadow(radius: 5)
                         .padding([.trailing, .leading])
-                } else {
-                    Text("No subscriptions yet. Press + in the top right corner to add one.")
-                        .foregroundColor(.gray)
-                        .padding()
                 }
                 Spacer()
             }

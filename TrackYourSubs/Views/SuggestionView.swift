@@ -85,7 +85,7 @@ struct SuggestionView: View {
                 .navigationBarTitle(Text("Suggestions"), displayMode: .inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Cancel") {
+                        Button("Done") {
                             dismiss()
                         }
                     }
