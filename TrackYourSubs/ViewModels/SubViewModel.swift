@@ -220,7 +220,7 @@ class SubViewModel: ObservableObject {
         return dict
     }
     
-    // Categories & PayStamps
+    // Categories
     func removeCategory(categoryIndex: Int) {
         categories.remove(at: categoryIndex)
     }
@@ -231,12 +231,6 @@ class SubViewModel: ObservableObject {
     
     func saveCategories() {
         defaults.set(categories, forKey: "categoriesKey")
-    }
-    
-    func addPayStamp(sub: SubItem) {
-        if let index = subscriptions.firstIndex(where: { $0.id == sub.id}) {
-            subscriptions[index] = sub.update(newName: sub.name, newAmount: sub.amount, newFreq: sub.freq, newPurchaseDate: sub.purchaseDate, newCat: sub.category, newRank: sub.rank, payStamp: sub.payStamp + [Date.now])
-        }
     }
     
     // Suggestion Algorithm
@@ -366,6 +360,27 @@ class SubViewModel: ObservableObject {
     }
     
     // Paying Subscriptions Logic
+    func addPayStamp(sub: SubItem) {
+        if let index = subscriptions.firstIndex(where: { $0.id == sub.id}) {
+            if sub.payStamp.isEmpty || Calendar.current.compare(Date.now, to: sub.payStamp.last ?? Date.now, toGranularity: .day) != .orderedSame {
+                subscriptions[index] = sub.update(newName: sub.name, newAmount: sub.amount, newFreq: sub.freq, newPurchaseDate: sub.purchaseDate, newCat: sub.category, newRank: sub.rank, payStamp: sub.payStamp + [Date.now])
+            }
+        }
+    }
     
-    
+    func isPayed(sub: SubItem) -> Bool {
+        let calendar = Calendar.current
+        let currDate = calendar.startOfDay(for: Date.now)
+        let lastPay = calendar.startOfDay(for: sub.payStamp.last ?? Date.now)
+        let delta = Calendar.current.dateComponents([.year, .month], from: lastPay, to: currDate)
+        let empty = sub.payStamp.isEmpty
+        
+        if !empty && sub.freq == "monthly" && delta.month! < 1 {
+            return true
+        } else if !empty && sub.freq == "yearly" && delta.year! < 1 {
+            return true
+        }
+       
+        return false
+    }
 }

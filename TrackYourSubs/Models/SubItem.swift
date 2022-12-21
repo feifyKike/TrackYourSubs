@@ -29,7 +29,7 @@ struct SubItem: Identifiable, Comparable, Codable, Hashable {
     }
     
     func update(newName: String, newAmount: Double, newFreq: String, newPurchaseDate: Date, newCat: String, newRank: Int, payStamp: [Date] = []) -> SubItem {
-        return SubItem(id: id, name: newName, amount: newAmount, freq: newFreq, purchaseDate: newPurchaseDate, category: newCat, rank: newRank)
+        return SubItem(id: id, name: newName, amount: newAmount, freq: newFreq, purchaseDate: newPurchaseDate, category: newCat, rank: newRank, payStamp: payStamp)
     }
     
     static func <(lhs: SubItem, rhs: SubItem) -> Bool {

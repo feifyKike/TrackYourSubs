@@ -9,6 +9,8 @@ import SwiftUI
 
 struct NotificationView: View {
     @EnvironmentObject var subViewModel: SubViewModel
+    @State private var showingAlert = false
+    @State var message = ""
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -26,15 +28,22 @@ struct NotificationView: View {
                 } else {
                     ForEach(urgent.sorted { return $0.value < $1.value }, id:\.key) { key, value in
                         HStack {
-//                            Image(systemName: payed ? "checkmark.circle" : "circle")
-//                                .font(.title3)
-//                                .onTapGesture {
-//                                    payed.toggle()
-//                                }
+                            Image(systemName: subViewModel.isPayed(sub: key) ? "checkmark.circle" : "circle")
+                                .font(.title3)
+                                .onTapGesture {
+                                    withAnimation(.linear) {
+                                        subViewModel.addPayStamp(sub: key)
+                                    }
+                                }
                             VStack(alignment: .leading) {
                                 Text(key.name).font(.title3).fontWeight(.semibold)
-                                Text("due \(value == 0 ? "today" : "in \(value) day\(value > 1 ? "s" : "")")")
-                                    .foregroundColor(.red)
+                                if subViewModel.isPayed(sub: key) {
+                                    Text("Payed")
+                                        .foregroundColor(.green)
+                                } else {
+                                    Text("due \(value == 0 ? "today" : "in \(value) day\(value > 1 ? "s" : "")")")
+                                        .foregroundColor(.red)
+                                }
                             }
                             Spacer()
                             Text("$" + String(key.amount))

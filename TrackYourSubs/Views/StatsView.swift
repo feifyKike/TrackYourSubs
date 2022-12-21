@@ -16,6 +16,7 @@ struct StatsView: View {
     var body: some View {
         NavigationView {
             ScrollView {
+                // Importance Index
                 HStack {
                     Text("\(subViewModel.importanceIndex())%")
                         .font(.title2)
@@ -39,6 +40,12 @@ struct StatsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .shadow(radius: 5)
                     .padding([.leading, .trailing])
+                // Bar Graph
+                CardView {
+                    ChartLabel("Spending", type: .subTitle)
+                    LineChart()
+                }.data([2, 3, 1, 4]).chartStyle(ChartStyle(backgroundColor: Color("Tiles"), foregroundColor: ColorGradient(.blue, .purple))).frame(height: 100).padding().shadow(radius: 5)
+                
                 // Pie Chart
                 let spending = subViewModel.spendingByCategory()
                 let gradients = createGradients()
@@ -53,7 +60,7 @@ struct StatsView: View {
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
-                            ChartLabel("Spending", type: .subTitle, format: "$%.01f")
+                            ChartLabel("By Category", type: .subTitle, format: "$%.01f")
                             PieChart()
                                 .padding([.leading, .trailing])
                             LegendView(keys: gradients)
@@ -64,7 +71,7 @@ struct StatsView: View {
                     .data(spending)
                     .chartStyle(ChartStyle(backgroundColor: .white,
                                            foregroundColor: gradients))
-                    .frame(height: 600)
+                    .frame(height: 400)
                     .shadow(radius: 0.5)
                     .padding()
                 Spacer()

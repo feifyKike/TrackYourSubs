@@ -4,7 +4,7 @@
 //
 //  Created by Max Shelepov on 7/28/22.
 //
-
+// NOT IN USE - Maybe down the road
 import Foundation
 
 struct Category: Identifiable {
