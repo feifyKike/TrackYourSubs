@@ -52,7 +52,7 @@ struct NotificationView: View {
                             .background(Color("Tiles"))
                             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                             .shadow(radius: 5)
-                            .padding()
+                            .padding([.leading, .trailing, .top])
                     }
                     Spacer()
                 }

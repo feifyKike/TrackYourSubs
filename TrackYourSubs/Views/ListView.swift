@@ -114,7 +114,11 @@ struct ListView: View {
                         Button(action: {
                             showSuggestion.toggle()
                         }, label: {
-                            Label("Suggestion", systemImage: "lightbulb").foregroundColor(Color.accentColor)
+                            if subViewModel.suggestionBadge() {
+                                Label("Suggestion", systemImage: "lightbulb.fill").foregroundColor(Color.accentColor)
+                            } else {
+                                Label("Suggestion", systemImage: "lightbulb").foregroundColor(Color.accentColor)
+                            }
                         })
                         .sheet(isPresented: $showSuggestion) {
                             SuggestionView()
@@ -126,7 +130,13 @@ struct ListView: View {
                         Button(action: {
                             showNotifications.toggle()
                         }, label: {
-                            Label("Notifications", systemImage: "bell").foregroundColor(Color.accentColor)
+                            if subViewModel.bellBadge() {
+                                Label("Notifications", systemImage: "bell.badge")
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(Color.red, Color.accentColor)
+                            } else {
+                                Label("Notifications", systemImage: "bell").foregroundColor(Color.accentColor)
+                            }
                         })
                         .sheet(isPresented: $showNotifications) {
                             NotificationView()

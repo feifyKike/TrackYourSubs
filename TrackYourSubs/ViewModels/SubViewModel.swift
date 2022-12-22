@@ -383,4 +383,30 @@ class SubViewModel: ObservableObject {
        
         return false
     }
+    
+    func bellBadge() -> Bool {
+        if determineUpcoming().filter({ $0.value < 1}).isEmpty {
+            return false
+        }
+        
+        var unpaid = false
+        
+        for subscription in subscriptions {
+            if !isPayed(sub: subscription) {
+                unpaid = true
+                break
+            }
+        }
+        
+        return unpaid
+    }
+    
+    func suggestionBadge() -> Bool {
+        if subscriptions.isEmpty {
+            return false
+        }
+        let totalToUse = budgetType == "monthly" ? ribbonData()[0] : ribbonData()[1]
+        
+        return totalToUse >= budget * 2 || totalToUse > budget
+    }
 }

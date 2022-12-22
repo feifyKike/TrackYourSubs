@@ -12,10 +12,10 @@ struct SuggestionView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        let budgetToUse = subViewModel.budgetType == "monthly" ? subViewModel.ribbonData()[0] : subViewModel.ribbonData()[1]
+        let totalToUse = subViewModel.budgetType == "monthly" ? subViewModel.ribbonData()[0] : subViewModel.ribbonData()[1]
         NavigationView {
             VStack {
-                if budgetToUse >= subViewModel.budget * 2 && !subViewModel.subscriptions.isEmpty {
+                if !subViewModel.subscriptions.isEmpty && totalToUse >= subViewModel.budget * 2  {
                     HStack {
                         Image(systemName: "exclamationmark.circle")
                         Text("Budget set too low.")
@@ -27,7 +27,7 @@ struct SuggestionView: View {
                         .shadow(radius: 5)
                         .padding()
                     Spacer()
-                }  else if budgetToUse > subViewModel.budget {
+                }  else if totalToUse > subViewModel.budget {
                     let toRemove: [SubItem] = subViewModel.save()
                     
                     HStack {
