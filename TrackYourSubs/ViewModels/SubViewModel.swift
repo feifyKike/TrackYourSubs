@@ -359,6 +359,44 @@ class SubViewModel: ObservableObject {
         return Int((calcImportance / totalImportance) * 100.0)
     }
     
+    func spendingByMonth() -> [Double] {
+        var spending: [Double] = []
+        var months: [String] = [] // format of date 03/22
+        
+        for s in subscriptions {
+            for month in s.payStamp {
+                let dateString = dateToString(date: month)
+                if !months.contains(dateString) {
+                    months.append(dateString)
+                }
+            }
+        }
+        
+        for month in months {
+            for s in subscriptions {
+                if dateToStringList(dates: s.payStamp).contains(month) {
+                    spending.append(s.amount)
+                }
+            }
+        }
+        
+        return spending
+    }
+    
+    func dateToStringList(dates: [Date]) -> [String] {
+        var stringDates: [String] = []
+        for i in dates {
+            stringDates.append(dateToString(date: i))
+        }
+        return stringDates
+    }
+    
+    func dateToString(date: Date) -> String {
+        let formatter3 = DateFormatter()
+        formatter3.dateFormat = "MM/YY"
+        return formatter3.string(from: date)
+    }
+    
     // Paying Subscriptions Logic
     func addPayStamp(sub: SubItem) {
         if let index = subscriptions.firstIndex(where: { $0.id == sub.id}) {
@@ -384,6 +422,48 @@ class SubViewModel: ObservableObject {
         return false
     }
     
+    func dateDelta(initial: Date, final: Date, type: String) ->  Int {
+        let calendar = Calendar.current
+        let i = calendar.startOfDay(for: initial)
+        let f = calendar.startOfDay(for: final)
+        let delta = Calendar.current.dateComponents([.year, .month], from: i, to: f)
+        if type == "yearly" {
+            return delta.year!
+        }
+        return delta.month!
+    }
+    
+    func individualStreak(sub: SubItem) -> Int {
+        let stamps = sub.payStamp
+        var individual = 0
+        // if less than step (2) use isPayed
+        if sub.payStamp.count < 2 && isPayed(sub: sub) {
+            return 1
+        }
+        // if a step or more (2 or >), start from the end and add 1 each time diff is 1 month or 1 year depending on freq
+        for i in stride(from: stamps.count-1, through: 0, by: -1) {
+            if dateDelta(initial: stamps[i-1], final: stamps[i], type: sub.freq) <= 1 {
+                individual += 1
+            }
+        }
+        
+        return individual
+    }
+    
+    func streak() -> Int {
+        if subscriptions.count < 1 {
+            return 0
+        }
+        
+        var total = 0
+        
+        for subscription in subscriptions {
+            total += individualStreak(sub: subscription)
+        }
+        return total / subscriptions.count
+    }
+    
+    // Icon Badges
     func bellBadge() -> Bool {
         if determineUpcoming().filter({ $0.value < 1}).isEmpty {
             return false

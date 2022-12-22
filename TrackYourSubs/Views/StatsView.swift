@@ -16,35 +16,29 @@ struct StatsView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                // Importance Index
-                HStack {
-                    Text("\(subViewModel.importanceIndex())%")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                        .padding(5)
-                        .background(.blue)
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    Text("Importance Index").font(.headline).foregroundColor(.secondary)
-                    Spacer()
-                    Button(action: {
-                        showInfo.toggle()
-                    }, label: {
-                        Label("More Info", systemImage: "questionmark.circle").foregroundColor(.accentColor)
-                    })
-                        .sheet(isPresented: $showInfo) {
-                            DefinitionView(term: "👉 Importance Index", definition: "This is metric that determines the overall importance or volume of important subscriptions that you have added. The value is calculated by specified importance by the total that is possible. The greater the % or grade the better.")
-                        }
-                }
-                    .padding()
-                    .background(Color("Tiles"))
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .shadow(radius: 5)
-                    .padding([.leading, .trailing])
-                // Bar Graph
+                // Line Graph
+                let monthlySpending = subViewModel.spendingByMonth()
                 CardView {
-                    ChartLabel("Spending", type: .subTitle)
-                    LineChart()
-                }.data([2, 3, 1, 4]).chartStyle(ChartStyle(backgroundColor: Color("Tiles"), foregroundColor: ColorGradient(.blue, .purple))).frame(height: 100).padding().shadow(radius: 5)
+                    if monthlySpending.count < 1 || monthlySpending.allSatisfy({$0 == monthlySpending[0]}){
+                        VStack(alignment: .center) {
+                            Image(systemName: "exclamationmark.circle").font(.title)
+                            Text("No Data.").font(.title)
+                            Text("Too few subscriptions.")
+                        }
+                        .frame(width: 200)
+                        .foregroundColor(.secondary)
+                    } else {
+                        VStack {
+                            ChartLabel("Spending History", type: .subTitle, format: "$%.01f")
+                            LineChart()
+                        }
+                    }
+                }
+                    .data(monthlySpending)
+                    .chartStyle(ChartStyle(backgroundColor: Color("Tiles"), foregroundColor: ColorGradient(.blue, .blue)))
+                    .frame(height: 200)
+                    .shadow(radius: 5)
+                    .padding()
                 
                 // Pie Chart
                 let spending = subViewModel.spendingByCategory()
@@ -60,7 +54,7 @@ struct StatsView: View {
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
-                            ChartLabel("By Category", type: .subTitle, format: "$%.01f")
+                            ChartLabel("Spending (By Category)", type: .subTitle, format: "$%.01f")
                             PieChart()
                                 .padding([.leading, .trailing])
                             LegendView(keys: gradients)
@@ -77,8 +71,33 @@ struct StatsView: View {
                 Spacer()
             }
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    HStack {
+                        Text("\(subViewModel.importanceIndex())%")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(5)
+                            .background(.blue)
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        Text("Importance Index").font(.headline).foregroundColor(.secondary)
+                        Spacer()
+                        Button(action: {
+                            showInfo.toggle()
+                        }, label: {
+                            Label("More Info", systemImage: "questionmark.circle").foregroundColor(.accentColor)
+                        })
+                            .sheet(isPresented: $showInfo) {
+                                DefinitionView(term: "👉 Importance Index", definition: "This is metric that determines the overall importance or volume of important subscriptions that you have added. The value is calculated by specified importance by the total that is possible. The greater the % or grade the better.")
+                            }
+                    }
+    
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Text("🔥10 months")
+                    HStack {
+                        Label("Streak", systemImage: "flame")
+                        Text(String(subViewModel.streak()))
+                    }.foregroundColor(.red)
+                    
                 }
             }
         }
