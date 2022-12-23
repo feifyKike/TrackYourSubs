@@ -107,7 +107,7 @@ struct ListView: View {
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         // Preferences
-                        NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType), label: {
+                        NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType, notificationsAllowed: subViewModel.notifications, reminder: subViewModel.reminder), label: {
                             Label("Preferences", systemImage: "gearshape")
                         })
                         // Suggestions
@@ -147,6 +147,10 @@ struct ListView: View {
                         })
                         
                     }
+                }
+                .onAppear {
+                    // Clear app icon badge
+                    UIApplication.shared.applicationIconBadgeNumber = 0
                 }
         }
     }

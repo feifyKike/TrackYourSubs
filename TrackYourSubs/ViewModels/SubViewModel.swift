@@ -46,12 +46,24 @@ class SubViewModel: ObservableObject {
             defaults.set(budgetType, forKey: "budgetTypeKey")
         }
     }
+    @Published var notifications = true {
+        didSet {
+            defaults.set(notifications, forKey: "notificationsKey")
+        }
+    }
+    @Published var reminder = 0 {
+        didSet {
+            defaults.set(reminder, forKey: "reminderKey")
+        }
+    }
     let threshold: Int = 7
     var combinations: [[SubItem]] = []
     let subsKey: String = "subscription_key"
     
     init() {
         self.tutorial = defaults.bool(forKey: "tutorial")
+        self.notifications = defaults.bool(forKey: "notificationsKey")
+        self.reminder = defaults.integer(forKey: "reminderKey")
         self.budget = defaults.double(forKey: "budgetKey")
         self.budgetType = defaults.string(forKey: "budgetTypeKey") ?? "monthly"
         self.categories = defaults.object(forKey: "categoriesKey") as? [String] ?? ["Uncategorized"]
@@ -62,11 +74,6 @@ class SubViewModel: ObservableObject {
     
     // Working with Subscriptions
     func getSubs() {
-//        let newSubs = [
-//            SubItem(name: "Youtube", amount: 12.0, freq: "monthly", purchaseDate: Date(), category: "Uncategorized", rank: 3),
-//            SubItem(name: "Google Domains", amount: 7.0, freq: "yearly", purchaseDate: Date(), category: "Uncategorized", rank: 1)
-//        ]
-//        subscriptions.append(contentsOf: newSubs)
         guard
             let data = UserDefaults.standard.data(forKey: subsKey),
             let savedItems = try? JSONDecoder().decode([SubItem].self, from: data)
@@ -469,16 +476,13 @@ class SubViewModel: ObservableObject {
             return false
         }
         
-        var unpaid = false
-        
         for subscription in subscriptions {
             if !isPayed(sub: subscription) {
-                unpaid = true
-                break
+                return true
             }
         }
         
-        return unpaid
+        return false
     }
     
     func suggestionBadge() -> Bool {

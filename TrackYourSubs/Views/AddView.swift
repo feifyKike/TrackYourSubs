@@ -10,6 +10,7 @@ import SwiftUI
 struct AddView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var subViewModel: SubViewModel
+    @EnvironmentObject var notificationManager: NotificationManager
     @State var subName: String = ""
     @State var subAmount: String = ""
     @State var subFreq: String = ""
@@ -44,19 +45,11 @@ struct AddView: View {
                 Text("Monthly").tag("monthly")
             }.pickerStyle(.segmented)
             DatePicker("Purchase Date", selection: $subPurchaseDate, displayedComponents: [.date])
-            //("Category", text: $subCategory)
+            
             Picker(selection: $subCategory, label: Text("Choose Category")) {
                 ForEach(subViewModel.categories, id: \.self) { c in
                     Text(c).tag(c)
                 }
-//                HStack {
-//                    TextField("New Category", text: $newCategory)
-//                    Button(action: {
-//                        subViewModel.addCategory(newCategory: newCategory)
-//                        newCategory = ""
-//                    }, label: {Text("Add")})
-//                        .disabled(newCategory.isEmpty)
-//                }
             }
             // level of importance 1-5
             Stepper(value: $subRank, in: 1...5) {
@@ -77,8 +70,19 @@ struct AddView: View {
         if subViewModel.tutorial {
             subViewModel.tutorial = false
         }
+        
         subViewModel.addSub(name: subName, amount: Double(subAmount) ?? 0.0, freq: subFreq, purchaseDate: subPurchaseDate, category: subCategory, rank: subRank)
+        
         subViewModel.determineOrder()
+        
+        if subViewModel.notifications {
+            notificationManager.scheduleNofitication(id: subViewModel.subscriptions.first(where: {$0.name == subName})?.id ?? UUID().uuidString,
+                                                     title: subName,
+                                                     body: "The following subscription is due \(subViewModel.reminder > 0 ? "\(subViewModel.reminder == 1 ? "tomorrow" : "\(subViewModel.reminder) days")" : "today").",
+                                                     date: notificationManager.nextPay(purchaseDate: subPurchaseDate, freq: subFreq),
+                                                     remindBefore: subViewModel.reminder)
+        }
+        
         presentationMode.wrappedValue.dismiss()
     }
     

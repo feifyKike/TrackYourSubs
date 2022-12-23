@@ -10,6 +10,7 @@ import SwiftUI
 struct EditView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var subViewModel: SubViewModel
+    @EnvironmentObject var notificationManager: NotificationManager
     let sub: SubItem
     @State var subName: String
     @State var subAmount: String
@@ -37,7 +38,7 @@ struct EditView: View {
                 Text("Monthly").tag("monthly")
             }.pickerStyle(.segmented)
             DatePicker("Purchase Date", selection: $subPurchaseDate, displayedComponents: [.date])
-            Text("🗓 Next Payment: \(nextPay())")
+            Text("🗓 Next Payment: \(dateToString(date: notificationManager.nextPay(purchaseDate: sub.purchaseDate, freq: sub.freq)))")
             Picker(selection: $subCategory, label: Text("Category")) {
                 ForEach(subViewModel.categories, id: \.self) { c in
                     Text(c).tag(c)
@@ -61,66 +62,26 @@ struct EditView: View {
     
     func saveButtonPressed() {
         subViewModel.updateSub(sub: sub, newName: subName, newAmount: Double(subAmount) ?? 0.0, newFreq: subFreq, newPurchaseDate: subPurchaseDate, newCat: subCategory, newRank: subRank)
+        
         subViewModel.determineOrder()
+        
+        notificationManager.cancelNotification(id: sub.id)
+        
+        if subViewModel.notifications {
+            notificationManager.scheduleNofitication(id: sub.id, title: subName,
+                                                     body: "The following subscription is due \(subViewModel.reminder > 0 ? "\(subViewModel.reminder == 1 ? "tomorrow" : "\(subViewModel.reminder) days")" : "today").",
+                                                     date: notificationManager.nextPay(purchaseDate: subPurchaseDate, freq: subFreq),
+                                                     remindBefore: subViewModel.reminder)
+        }
+        
         presentationMode.wrappedValue.dismiss()
     }
     
-    func nextPay() -> String {
-        let calendar = Calendar.current
+    func dateToString(date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        let currDate = calendar.startOfDay(for: Date.now)
         
-        let pDate = calendar.startOfDay(for: sub.purchaseDate)
-        let delta = calendar.dateComponents([.year, .month, .day], from: pDate, to: currDate)
-        let years = delta.year!
-        let months = delta.month!
-        let days = delta.day!
-        
-        var toAdd = DateComponents()
-//        if sub.freq == "monthly" && days % 30 <= 7 && months > 0 {
-//            toAdd.day = days % 30
-//            let upcoming = calendar.date(byAdding: toAdd, to: currDate)!
-//
-//            return formatter.string(from: upcoming)
-//
-//        } else if sub.freq == "yearly" && days % 365 <= 7 && years > 0 {
-//            toAdd.day = days % 365
-//            let upcoming = calendar.date(byAdding: toAdd, to: currDate)!
-//
-//            return formatter.string(from: upcoming)
-//        }
-        if sub.freq == "monthly" {
-            if months > 0 {
-                toAdd.day = days % 30 == 0 ? days % 30 : (30 - (days % 30))
-                let upcoming = calendar.date(byAdding: toAdd, to: currDate)!
-                
-                return formatter.string(from: upcoming)
-            } else {
-                if 30 - days <= 7 {
-                    toAdd.day = 30 - days
-                    let upcoming = calendar.date(byAdding: toAdd, to: currDate)!
-                    
-                    return formatter.string(from: upcoming)
-                }
-            }
-        } else if sub.freq == "yearly" {
-            if years > 0 {
-                toAdd.day = days % 365 == 0 ? days & 365 : (365 - (days % 365))
-                let upcoming = calendar.date(byAdding: toAdd, to: currDate)!
-                
-                return formatter.string(from: upcoming)
-            } else {
-                if 365 - days <= 7 {
-                    toAdd.day = 365 - days
-                    let upcoming = calendar.date(byAdding: toAdd, to: currDate)!
-                    
-                    return formatter.string(from: upcoming)
-                }
-            }
-        }
-        toAdd.day = 30
-        return formatter.string(from: calendar.date(byAdding: toAdd, to: currDate)!)
+        return formatter.string(from: date)
     }
     
     func deleteSub() {
@@ -137,5 +98,6 @@ struct EditView_Previews: PreviewProvider {
             EditView(sub: sub1)
         }
         .environmentObject(SubViewModel())
+        .environmentObject(NotificationManager())
     }
 }

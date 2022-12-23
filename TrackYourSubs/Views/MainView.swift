@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var subViewModel: SubViewModel
+    @EnvironmentObject var notificationManager: NotificationManager
     
     var body: some View {
         if !subViewModel.tutorial {
@@ -36,6 +37,9 @@ struct MainView: View {
                     Spacer()
                 }
                 .navigationTitle("🎉 Welcome!")
+                .onAppear {
+                    notificationManager.requestAuthorization()
+                }
             }
         }
     }
@@ -45,5 +49,6 @@ struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()
             .environmentObject(SubViewModel())
+            .environmentObject(NotificationManager())
     }
 }
