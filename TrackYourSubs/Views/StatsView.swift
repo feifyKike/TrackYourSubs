@@ -11,40 +11,28 @@ import SwiftUICharts
 struct StatsView: View {
     @EnvironmentObject var subViewModel: SubViewModel
     @State private var showInfo: Bool = false
+    @State private var showCategories: Bool = true
     let colors = [Color("Teal"), Color("Peach"), Color("Red"), Color("Blue"), Color("DarkBlue")]
     
     var body: some View {
         NavigationView {
             ScrollView {
-                // Line Graph
-                let monthlySpending = subViewModel.spendingByMonth()
-                CardView {
-                    if monthlySpending.count < 1 || monthlySpending.allSatisfy({$0 == monthlySpending[0]}){
-                        VStack(alignment: .center) {
-                            Image(systemName: "exclamationmark.circle").font(.title)
-                            Text("No Data.").font(.title)
-                            Text("Too few subscriptions.")
-                        }
-                        .frame(width: 200)
-                        .foregroundColor(.secondary)
-                    } else {
-                        VStack {
-                            ChartLabel("Spending History", type: .subTitle, format: "$%.01f")
-                            LineChart()
-                        }
-                    }
-                }
-                    .data(monthlySpending)
-                    .chartStyle(ChartStyle(backgroundColor: Color("Tiles"), foregroundColor: ColorGradient(.blue, .blue)))
-                    .frame(height: 200)
-                    .shadow(radius: 5)
-                    .padding()
-                
                 // Pie Chart
-                let spending = subViewModel.spendingByCategory()
-                let gradients = createGradients()
+                let categorySpending = subViewModel.spendingByCategory()
+                let rankSpending = subViewModel.spendingByRank()
+                let data = showCategories ? categorySpending : rankSpending
+                let keyCount = showCategories ? subViewModel.categories.count : 5
+                let gradients = createGradients(num: keyCount)
+                HStack {
+                    Spacer()
+                    Picker(selection: $showCategories, label: Text("Show")) {
+                        Text("Categories").tag(true)
+                        Text("Importance").tag(false)
+                    }
+                }.padding([.leading, .trailing])
+                
                 CardView {
-                    if spending.count < 1 {
+                    if categorySpending.count < 1 {
                         VStack(alignment: .center) {
                             Image(systemName: "exclamationmark.circle").font(.title)
                             Text("No Data.").font(.title)
@@ -54,21 +42,58 @@ struct StatsView: View {
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
-                            ChartLabel("Spending (By Category)", type: .subTitle, format: "$%.01f")
+                            ChartLabel("Spending", type: .subTitle, format: "$%.01f")
                             PieChart()
                                 .padding([.leading, .trailing])
-                            LegendView(keys: gradients)
+                            LegendView(keys: gradients, keyCount: keyCount, showCategories: showCategories)
                         }
                         .background(Color("PieChartTile"))
                     }
                 }
-                    .data(spending)
+                    .data(data)
                     .chartStyle(ChartStyle(backgroundColor: .white,
                                            foregroundColor: gradients))
-                    .frame(height: 400)
+                    .frame(height: 500)
                     .shadow(radius: 0.5)
-                    .padding()
-                Spacer()
+                    .padding([.leading, .trailing])
+                
+                // Bar Graph
+                let monthlySpending = subViewModel.spendingByMonth()
+                CardView {
+                    if monthlySpending.count < 1 {
+                        VStack(alignment: .center) {
+                            Image(systemName: "exclamationmark.circle").font(.title)
+                            Text("No Data.").font(.title)
+                            Text("No payments made yet.")
+                        }
+                        .frame(width: 200)
+                        .foregroundColor(.secondary)
+                    } else {
+                        VStack {
+                            ChartLabel("Payment History", type: .subTitle, format: "$%.01f")
+                            BarChart().padding([.leading, .trailing])
+                            HStack {
+                                let months = subViewModel.uniqueMonths()
+                                ForEach(months, id:\.self) { month in
+                                    Text(month)
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding([.leading, .trailing, .bottom])
+                                }
+                            }
+                        }
+                        .background(Color("PieChartTile"))
+                    }
+                }
+                    .data(monthlySpending)
+                    .chartStyle(ChartStyle(backgroundColor: .white, foregroundColor: ColorGradient(.blue, .blue)))
+                    .frame(height: 200)
+                    .shadow(radius: 5)
+                    .padding([.leading, .trailing, .top])
+                Text("☝️ Note: the x-axis labels are shown in the format M/Y.")
+                    .foregroundColor(.secondary)
+                    .padding([.leading, .trailing])
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -79,7 +104,6 @@ struct StatsView: View {
                             .padding(5)
                             .background(.blue)
                             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        Text("Importance Index").font(.headline).foregroundColor(.secondary)
                         Spacer()
                         Button(action: {
                             showInfo.toggle()
@@ -95,7 +119,7 @@ struct StatsView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack {
                         Label("Streak", systemImage: "flame")
-                        Text(String(subViewModel.streak()))
+                        Text("\(subViewModel.streak()) M")
                     }.foregroundColor(.red)
                     
                 }
@@ -104,11 +128,12 @@ struct StatsView: View {
         
     }
     
-    func createGradients() -> [ColorGradient] {
+    func createGradients(num: Int) -> [ColorGradient] {
         var gradients: [ColorGradient] = []
+//        let num = showCategories ? subViewModel.categories.count : 5
         
         var i = 0
-        while i < subViewModel.categories.count {
+        while i < num {
             let gradient = ColorGradient(colors[Int.random(in: 0..<colors.count)], colors[Int.random(in: 0..<colors.count)])
             if !gradients.contains(gradient) {
                 gradients.append(gradient)

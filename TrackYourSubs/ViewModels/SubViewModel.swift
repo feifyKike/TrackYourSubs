@@ -351,6 +351,28 @@ class SubViewModel: ObservableObject {
         return categorySums
     }
     
+    func spendingByRank() -> CategorySums {
+        guard !subscriptions.isEmpty else { return [] }
+
+        var categorySums = CategorySums()
+
+        for i in 0..<5 {
+            let matchingSubs = subscriptions.filter {
+                $0.rank == i + 1
+            }.map { $0.amount }
+
+           categorySums.append((String(i+1), matchingSubs.reduce(0, +)))
+        }
+
+
+        return categorySums
+    }
+    
+    func percentage(of: CategorySums, pos: Int) -> Int {
+        return Int(((of[pos].1  / of.map { $0.1 }.reduce(0, +)) * 100).rounded())
+    }
+
+    
     func importanceIndex() -> Int {
         let totalImportance = Double(subscriptions.count) * 5.0
         
@@ -366,8 +388,7 @@ class SubViewModel: ObservableObject {
         return Int((calcImportance / totalImportance) * 100.0)
     }
     
-    func spendingByMonth() -> [Double] {
-        var spending: [Double] = []
+    func uniqueMonths() -> [String] {
         var months: [String] = [] // format of date 03/22
         
         for s in subscriptions {
@@ -378,13 +399,21 @@ class SubViewModel: ObservableObject {
                 }
             }
         }
+        return months
+    }
+    
+    func spendingByMonth() -> [Double] {
+        var spending: [Double] = []
+        let months: [String] = uniqueMonths()
         
         for month in months {
+            var forTheMonth = 0.0
             for s in subscriptions {
                 if dateToStringList(dates: s.payStamp).contains(month) {
-                    spending.append(s.amount)
+                    forTheMonth += s.amount
                 }
             }
+            spending.append(forTheMonth)
         }
         
         return spending
@@ -407,7 +436,7 @@ class SubViewModel: ObservableObject {
     // Paying Subscriptions Logic
     func addPayStamp(sub: SubItem) {
         if let index = subscriptions.firstIndex(where: { $0.id == sub.id}) {
-            if sub.payStamp.isEmpty || Calendar.current.compare(Date.now, to: sub.payStamp.last ?? Date.now, toGranularity: .day) != .orderedSame {
+            if sub.payStamp.isEmpty || Calendar.current.compare(sub.payStamp.last ?? Date.now, to: Date.now, toGranularity: .day) != .orderedSame {
                 subscriptions[index] = sub.update(newName: sub.name, newAmount: sub.amount, newFreq: sub.freq, newPurchaseDate: sub.purchaseDate, newCat: sub.category, newRank: sub.rank, payStamp: sub.payStamp + [Date.now])
             }
         }
