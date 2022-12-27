@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var subViewModel: SubViewModel
     @EnvironmentObject var notificationManager: NotificationManager
-    let version: String = "1.0.0"
+    let version: String = "0.0.9"
     let filter: String
     let order: String
     let budgetSelection: String
@@ -89,17 +89,18 @@ struct SettingsView: View {
             }
             Section(header: Text("Notifications"), footer: Text("Notifications will be sent out on the indicated day at 7:00AM.")) {
                 Toggle("Allow Notifications", isOn: $notificationsStatus)
-                    .onChange(of: notificationsAllowed) { _ in
-                        subViewModel.notifications.toggle()
+                    .onChange(of: notificationsStatus) { _ in
+                        subViewModel.notifications = notificationsStatus
                         updateNotifications()
                     }
                 Stepper(value: $reminderOption, in: 0...7) {
                     Text("Remind \(reminderOption > 0 ? "\(reminderOption < 2 ? "1 day before" : "\(reminderOption) days before")" : "on due date")")
-                }.disabled(!notificationsAllowed)
-                    .onChange(of: reminderOption) { _ in
-                        subViewModel.reminder = reminder
-                        updateNotifications()
-                    }
+                }
+                .disabled(!notificationsStatus)
+                .onChange(of: reminderOption) { _ in
+                    subViewModel.reminder = reminderOption
+                    updateNotifications()
+                }
             }
             Section(header: Text("About")) {
                 HStack {

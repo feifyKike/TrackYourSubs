@@ -46,7 +46,7 @@ class SubViewModel: ObservableObject {
             defaults.set(budgetType, forKey: "budgetTypeKey")
         }
     }
-    @Published var notifications = true {
+    @Published var notifications = false {
         didSet {
             defaults.set(notifications, forKey: "notificationsKey")
         }
