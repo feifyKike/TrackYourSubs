@@ -130,6 +130,8 @@ struct SettingsView: View {
     }
     
     func updateNotifications() {
+        notificationManager.requestAuthorization()
+        
         if subViewModel.notifications {
             notificationManager.scheduleAllNotifications(subs: subViewModel.subscriptions, remindBefore: subViewModel.reminder)
         } else {

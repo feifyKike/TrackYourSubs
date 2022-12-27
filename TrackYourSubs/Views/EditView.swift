@@ -86,6 +86,7 @@ struct EditView: View {
     
     func deleteSub() {
         subViewModel.deleteSub(id: sub.id)
+        notificationManager.cancelNotification(id: sub.id)
         presentationMode.wrappedValue.dismiss()
     }
 }

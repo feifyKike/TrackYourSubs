@@ -501,12 +501,10 @@ class SubViewModel: ObservableObject {
     
     // Icon Badges
     func bellBadge() -> Bool {
-        if determineUpcoming().filter({ $0.value < 1}).isEmpty {
-            return false
-        }
-        
-        for subscription in subscriptions {
-            if !isPayed(sub: subscription) {
+        let urgent = determineUpcoming().filter({ $0.value < 1})
+    
+        for valuePair in urgent {
+            if !isPayed(sub: valuePair.0) {
                 return true
             }
         }
@@ -515,11 +513,8 @@ class SubViewModel: ObservableObject {
     }
     
     func suggestionBadge() -> Bool {
-        if subscriptions.isEmpty {
-            return false
-        }
         let totalToUse = budgetType == "monthly" ? ribbonData()[0] : ribbonData()[1]
         
-        return totalToUse >= budget * 2 || totalToUse > budget
+        return totalToUse > budget * 2 || totalToUse > budget
     }
 }
