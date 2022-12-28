@@ -36,11 +36,6 @@ class SubViewModel: ObservableObject {
             defaults.set(filter, forKey: "filterKey")
         }
     }
-    @Published var tutorial = true {
-        didSet {
-            defaults.set(tutorial, forKey: "tutorial")
-        }
-    }
     @Published var budgetType = "" {
         didSet {
             defaults.set(budgetType, forKey: "budgetTypeKey")
@@ -61,7 +56,6 @@ class SubViewModel: ObservableObject {
     let subsKey: String = "subscription_key"
     
     init() {
-        self.tutorial = defaults.bool(forKey: "tutorial")
         self.notifications = defaults.bool(forKey: "notificationsKey")
         self.reminder = defaults.integer(forKey: "reminderKey")
         self.budget = defaults.double(forKey: "budgetKey")

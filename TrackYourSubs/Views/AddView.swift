@@ -67,10 +67,6 @@ struct AddView: View {
     }
     
     func addButtonPressed() {
-        if subViewModel.tutorial {
-            subViewModel.tutorial = false
-        }
-        
         subViewModel.addSub(name: subName, amount: Double(subAmount) ?? 0.0, freq: subFreq, purchaseDate: subPurchaseDate, category: subCategory, rank: subRank)
         
         subViewModel.determineOrder()

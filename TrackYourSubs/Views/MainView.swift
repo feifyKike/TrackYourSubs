@@ -12,35 +12,16 @@ struct MainView: View {
     @EnvironmentObject var notificationManager: NotificationManager
     
     var body: some View {
-        if !subViewModel.tutorial {
-            // Home
-            TabView {
-                ListView()
-                    .tabItem {
-                        Label("Dashboard", systemImage: "rectangle.3.group")
-                    }
-                StatsView()
-                    .tabItem {
-                        Label("Stats", systemImage: "chart.xyaxis.line")
-                    }
-            }
-        } else {
-            // Tutorial
-            NavigationView {
-                VStack {
-                    Text("To a place where you can manage subscriptions, lower your bills, and stay on top of your financial spending. With this simple to use app you will not want to go back to making spreadsheets.").padding()
-                    
-                    NavigationLink(destination: AddView(), label: {
-                        Text("Get Started").font(.title3)
-                    }).buttonStyle(.borderedProminent)
-                    
-                    Spacer()
+        // Home
+        TabView {
+            ListView()
+                .tabItem {
+                    Label("Dashboard", systemImage: "rectangle.3.group")
                 }
-                .navigationTitle("🎉 Welcome!")
-                .onAppear {
-                    notificationManager.requestAuthorization()
+            StatsView()
+                .tabItem {
+                    Label("Stats", systemImage: "chart.xyaxis.line")
                 }
-            }
         }
     }
 }
