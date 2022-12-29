@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var subViewModel: SubViewModel
     @EnvironmentObject var notificationManager: NotificationManager
+    @AppStorage("onboarding") var onboarding: Bool = true
     
     var body: some View {
         // Home
@@ -23,6 +24,9 @@ struct MainView: View {
                     Label("Stats", systemImage: "chart.xyaxis.line")
                 }
         }
+        .fullScreenCover(isPresented: $onboarding, content: {
+            OnboardingView(onboarding: $onboarding)
+        })
     }
 }
 
