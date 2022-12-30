@@ -23,6 +23,7 @@ struct NotificationView: View {
                         Text("Inbox is Empty").font(.title)
                         Text("Most urgent subscriptions will show up here.").frame(width: 200)
                     }
+                        .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
                         .padding()
                 } else {

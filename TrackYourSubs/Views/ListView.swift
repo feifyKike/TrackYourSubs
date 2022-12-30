@@ -77,10 +77,12 @@ struct ListView: View {
                 // Subscriptions
                 if subViewModel.subscriptions.isEmpty {
                     Text("No subscriptions yet. Press + in the top right corner to add one.")
+                        .multilineTextAlignment(.center)
                         .foregroundColor(.gray)
                         .padding()
                 } else if subViewModel.filterSubs().isEmpty {
                     Text("No Subscriptions for this filter.")
+                        .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
                         .padding()
                 } else if !subViewModel.subscriptions.isEmpty {

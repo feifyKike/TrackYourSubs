@@ -58,7 +58,7 @@ struct SettingsView: View {
                 }
             }
             Section() {
-                Picker(selection: $filterOption, label: Text("Filter by:")) {
+                Picker(selection: $filterOption, label: Text("Filter by")) {
                     Text("All").tag("")
                     ForEach(subViewModel.categories, id: \.self) { category in
                         Text("Category: \(category)").tag(category)
@@ -67,7 +67,7 @@ struct SettingsView: View {
                 .onChange(of: filterOption) { _ in
                     subViewModel.setFilter(newFilter: filterOption)
                 }
-                Picker(selection: $orderOption, label: Text("Order by:")) {
+                Picker(selection: $orderOption, label: Text("Order by")) {
                     Text("Price: descending").tag("priceDown")
                     Text("Price: ascending").tag("priceUp")
                     Text("Rank: descending").tag("rankDown")

@@ -37,8 +37,10 @@ struct StatsView: View {
                             Image(systemName: "exclamationmark.circle").font(.title)
                             Text("No Data.").font(.title)
                             Text("Add a subscription to see stats.")
+                                .multilineTextAlignment(.center)
                         }
-                        .frame(width: 200)
+                        .frame(maxWidth: .infinity, maxHeight: 500)
+                        .background(Color("PieChartTile"))
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
@@ -66,7 +68,8 @@ struct StatsView: View {
                             Text("No Data.").font(.title)
                             Text("No payments made yet.")
                         }
-                        .frame(width: 200)
+                        .frame(maxWidth: .infinity, maxHeight: 500)
+                        .background(Color("PieChartTile"))
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
