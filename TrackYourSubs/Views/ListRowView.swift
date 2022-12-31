@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ListRowView: View {
     let sub: SubItem
+    let currency: String
     
     var body: some View {
         HStack {
@@ -17,7 +18,7 @@ struct ListRowView: View {
                 Text(sub.freq.capitalized).foregroundColor(.secondary)
             }
             Spacer()
-            Text("$" + String(sub.amount)).font(.title3)
+            Text(sub.amount.formatted(.currency(code: currency))).font(.title3)
             Label("", systemImage: "chevron.right.circle").foregroundColor(.accentColor)
         }
     }
@@ -27,7 +28,7 @@ struct ListRowView_Previews: PreviewProvider {
     static var sub1 = SubItem(name: "Youtube", amount: 12.0, freq: "monthly", purchaseDate: Date(), category: "Entertainment", rank: 3)
     
     static var previews: some View {
-        ListRowView(sub: sub1)
+        ListRowView(sub: sub1, currency: "USD")
             .previewLayout(.sizeThatFits)
     }
 }

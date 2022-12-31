@@ -63,7 +63,7 @@ struct SuggestionView: View {
                                 Text(sub.freq.capitalized).foregroundColor(.secondary)
                             }
                             Spacer()
-                            Text("$" + String(sub.amount)).font(.title3)
+                            Text(sub.amount.formatted(.currency(code: subViewModel.currency))).font(.title3)
                         }
                     }
                         .padding()

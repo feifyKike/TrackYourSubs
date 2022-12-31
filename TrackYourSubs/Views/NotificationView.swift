@@ -47,7 +47,7 @@ struct NotificationView: View {
                                 }
                             }
                             Spacer()
-                            Text("$" + String(key.amount))
+                            Text(key.amount.formatted(.currency(code: subViewModel.currency)))
                         }
                             .padding()
                             .background(Color("Tiles"))

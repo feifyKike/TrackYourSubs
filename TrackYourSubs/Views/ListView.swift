@@ -37,7 +37,7 @@ struct ListView: View {
                             Image(systemName: "minus").foregroundColor(.yellow)
                         }
                         HStack(spacing: 0) {
-                            Text("Budget: $\(subViewModel.budget, specifier: "%.2f")")
+                            Text("Budget: " + subViewModel.budget.formatted(.currency(code: subViewModel.currency)))
                                 .font(.title)
                             Text("\(subViewModel.budgetType == "monthly" ? "/m" : "/yr")")
                                 .foregroundColor(.secondary)
@@ -52,7 +52,7 @@ struct ListView: View {
                     }
                     HStack {
                         let indicator = margin > 0 ? "remaining" : "over"
-                        Text("$\(abs(margin), specifier: "%.2f") \(indicator)").foregroundColor(.secondary)
+                        Text(abs(margin).formatted(.currency(code: subViewModel.currency)) + " \(indicator)").foregroundColor(.secondary)
                         Spacer()
                     }
                 }
@@ -68,7 +68,7 @@ struct ListView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(upcomingDict.sorted { return $0.value < $1.value }, id: \.key) { key, value in
-                                UpcomingView(days: value, sub: key)
+                                UpcomingView(days: value, sub: key, currency: subViewModel.currency)
                             }
                         }
                     }.padding().shadow(radius: 5)
@@ -100,7 +100,7 @@ struct ListView: View {
                     VStack {
                         ForEach(Array(subViewModel.filterSubs().enumerated()), id:\.offset) { i, sub in
                             NavigationLink(destination: EditView(sub: sub)) {
-                                ListRowView(sub: sub)
+                                ListRowView(sub: sub, currency: subViewModel.currency)
                             }.foregroundColor(.primary)
                             if (i != subViewModel.filterSubs().count - 1) {
                                 Divider().frame(height: 0.5).overlay(Color.secondary)
@@ -119,7 +119,7 @@ struct ListView: View {
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         // Preferences
-                        NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType, notificationsAllowed: subViewModel.notifications, reminder: subViewModel.reminder), label: {
+                        NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType, notificationsAllowed: subViewModel.notifications, reminder: subViewModel.reminder, currency: subViewModel.currency), label: {
                             Label("Preferences", systemImage: subViewModel.filter.isEmpty ? "gearshape" : "gearshape.2")
                         })
                         // Suggestions

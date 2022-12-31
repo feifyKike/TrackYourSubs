@@ -10,10 +10,11 @@ import SwiftUI
 struct UpcomingView: View {
     let days: Int
     let sub: SubItem
+    let currency: String
     
     var body: some View {
         VStack {
-            Text(sub.name.capitalized + " ($\(sub.amount))")
+            Text(sub.name.capitalized + " (\(sub.amount.formatted(.currency(code: currency))))")
                 .font(.title3)
             Text("due \(days == 0 ? "today" : "in \(days) day\(days > 1 ? "s" : "")")")
                 .foregroundColor(.gray)
@@ -30,7 +31,7 @@ struct UpcomingView_Previews: PreviewProvider {
     
     
     static var previews: some View {
-        UpcomingView(days: days, sub: sub1)
+        UpcomingView(days: days, sub: sub1, currency: "USD")
             .previewLayout(.sizeThatFits)
     }
 }

@@ -16,24 +16,28 @@ struct SettingsView: View {
     let budgetSelection: String
     let notificationsAllowed: Bool
     let reminder: Int
+    let currency: String
     @State var newCategory: String = ""
     @State var filterOption: String = ""
     @State var orderOption: String = ""
     @State var budgetOption: String = ""
     @State var notificationsStatus: Bool = false
     @State var reminderOption: Int = 0
+    @State var currencyCode: String = ""
     
-    init(filter: String, order: String, budgetSelection: String, notificationsAllowed: Bool, reminder: Int) {
+    init(filter: String, order: String, budgetSelection: String, notificationsAllowed: Bool, reminder: Int, currency: String) {
         self.filter = filter
         self.order = order
         self.budgetSelection = budgetSelection
         self.notificationsAllowed = notificationsAllowed
         self.reminder = reminder
+        self.currency = currency
         _filterOption = State(initialValue: self.filter)
         _orderOption = State(initialValue: self.order)
         _budgetOption = State(initialValue: self.budgetSelection)
         _notificationsStatus = State(initialValue: self.notificationsAllowed)
         _reminderOption = State(initialValue: self.reminder)
+        _currencyCode = State(initialValue: self.currency)
     }
     
     var body: some View {
@@ -86,6 +90,18 @@ struct SettingsView: View {
             .pickerStyle(.segmented)
             .onChange(of: budgetOption) { _ in
                 subViewModel.budgetType = budgetOption
+            }
+            Section(header: Text("Currency")) {
+                Picker(selection: $currencyCode, label: Text("Currency")) {
+                    Label("Dollar", systemImage: "dollarsign").tag("USD")
+                    Label("Euro", systemImage: "eurosign").tag("EUR")
+                    Label("Yen", systemImage: "yensign").tag("JPY")
+                    Label("Sterling", systemImage: "sterlingsign").tag("GBP")
+                    Label("Rupee", systemImage: "indianrupeesign").tag("INR")
+                }
+            }
+            .onChange(of: currencyCode) { _ in
+                subViewModel.currency = currencyCode
             }
             Section(header: Text("Notifications"), footer: Text("Notifications will be sent out on the indicated day at 7:00AM.")) {
                 Toggle("Allow Notifications", isOn: $notificationsStatus)
@@ -147,7 +163,7 @@ struct SettingsView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationView {
-            SettingsView(filter: filter, order: order, budgetSelection: budget, notificationsAllowed: false, reminder: 0)
+            SettingsView(filter: filter, order: order, budgetSelection: budget, notificationsAllowed: false, reminder: 0, currency: "USD")
         }.environmentObject(SubViewModel())
     }
 }

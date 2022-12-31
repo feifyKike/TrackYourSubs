@@ -15,7 +15,7 @@ struct EditBudgetView: View {
     var body: some View {
         ScrollView {
             VStack {
-                TextField("$\(subViewModel.budget, specifier: "%.2f")", text: $fieldBudget)
+                TextField(subViewModel.budget.formatted(.currency(code: subViewModel.currency)), text: $fieldBudget)
                     .padding(.horizontal)
                     .frame(height: 55)
                     .cornerRadius(10)

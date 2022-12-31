@@ -44,7 +44,7 @@ struct StatsView: View {
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
-                            ChartLabel("Spending", type: .subTitle, format: "$%.01f")
+                            ChartLabel("Spending", type: .subTitle, format: getCurrencySymbol(forCurrencyCode: subViewModel.currency) + "%.01f")
                             PieChart()
                                 .padding([.leading, .trailing])
                             LegendView(keys: gradients, keyCount: keyCount, showCategories: showCategories)
@@ -73,7 +73,7 @@ struct StatsView: View {
                         .foregroundColor(.secondary)
                     } else {
                         VStack {
-                            ChartLabel("Payment History", type: .subTitle, format: "$%.01f")
+                            ChartLabel("Payment History", type: .subTitle, format: getCurrencySymbol(forCurrencyCode: subViewModel.currency) + "%.01f")
                             BarChart().padding([.leading, .trailing])
                             HStack {
                                 let months = subViewModel.uniqueMonths()
@@ -146,6 +146,11 @@ struct StatsView: View {
 
 
         return gradients
+    }
+    
+    func getCurrencySymbol(forCurrencyCode code: String) -> String {
+        let locale = NSLocale(localeIdentifier: code)
+        return locale.displayName(forKey: NSLocale.Key.currencySymbol, value: code) ?? "USD"
     }
 }
 

@@ -51,6 +51,12 @@ class SubViewModel: ObservableObject {
             defaults.set(reminder, forKey: "reminderKey")
         }
     }
+    @Published var currency = "" {
+        didSet {
+            defaults.set(currency, forKey: "currencyKey")
+        }
+    }
+    
     let threshold: Int = 7
     var combinations: [[SubItem]] = []
     let subsKey: String = "subscription_key"
@@ -63,6 +69,7 @@ class SubViewModel: ObservableObject {
         self.categories = defaults.object(forKey: "categoriesKey") as? [String] ?? ["Uncategorized"]
         self.order = defaults.string(forKey: "orderKey") ?? ""
         self.filter = defaults.string(forKey: "filterKey") ?? ""
+        self.currency = defaults.string(forKey: "currencyKey") ?? "USD"
         getSubs()
     }
     

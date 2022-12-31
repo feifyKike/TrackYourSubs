@@ -15,7 +15,7 @@ struct ListHeaderView: View {
         HStack {
             Text("\(subViewModel.subscriptions.count) subscription\(subViewModel.subscriptions.count > 1 ? "s" : "")")
             Spacer()
-            Text("$\(rd[0], specifier: "%.2f")/M, $\(rd[1], specifier: "%.2f")/YR")
+            Text("\(rd[0].formatted(.currency(code: subViewModel.currency)))/M, \(rd[1].formatted(.currency(code: subViewModel.currency)))/YR")
             
         }
             .padding([.leading, .trailing])
