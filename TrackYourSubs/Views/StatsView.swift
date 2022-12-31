@@ -68,7 +68,7 @@ struct StatsView: View {
                             Text("No Data.").font(.title)
                             Text("No payments made yet.")
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 500)
+                        .frame(maxWidth: .infinity, maxHeight: 200)
                         .background(Color("PieChartTile"))
                         .foregroundColor(.secondary)
                     } else {
@@ -90,9 +90,9 @@ struct StatsView: View {
                     }
                 }
                     .data(monthlySpending)
-                    .chartStyle(ChartStyle(backgroundColor: .white, foregroundColor: ColorGradient(.blue, .blue)))
+                    .chartStyle(ChartStyle(backgroundColor: .white, foregroundColor: ColorGradient(.blue, .cyan)))
                     .frame(height: 200)
-                    .shadow(radius: 5)
+                    .shadow(radius: 0.5)
                     .padding([.leading, .trailing, .top])
                 Text("☝️ Note: the x-axis labels are shown in the format M/Y.")
                     .foregroundColor(.secondary)

@@ -76,14 +76,24 @@ struct ListView: View {
                 
                 // Subscriptions
                 if subViewModel.subscriptions.isEmpty {
-                    Text("No subscriptions yet. Press + in the top right corner to add one.")
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.gray)
-                        .padding()
-                } else if subViewModel.filterSubs().isEmpty {
-                    Text("No Subscriptions for this filter.")
+                    VStack {
+                        Image(systemName: "basket.fill").font(.largeTitle)
+                        Text("No subscriptions").font(.title)
+                        Text("Press + in the top right to add one.")
+                    }
+                        .frame(height: 300)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
+                        .padding()
+                } else if subViewModel.filterSubs().isEmpty {
+                    VStack {
+                        Image(systemName: "square.stack.3d.up.slash").font(.largeTitle)
+                        Text("No matches").font(.title)
+                        Text("No subscriptions for this filter.")
+                    }
+                        .frame(height: 300)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.gray)
                         .padding()
                 } else if !subViewModel.subscriptions.isEmpty {
                     ListHeaderView()
@@ -110,7 +120,7 @@ struct ListView: View {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         // Preferences
                         NavigationLink(destination: SettingsView(filter: subViewModel.filter, order: subViewModel.order, budgetSelection: subViewModel.budgetType, notificationsAllowed: subViewModel.notifications, reminder: subViewModel.reminder), label: {
-                            Label("Preferences", systemImage: "gearshape")
+                            Label("Preferences", systemImage: subViewModel.filter.isEmpty ? "gearshape" : "gearshape.2")
                         })
                         // Suggestions
                         Button(action: {

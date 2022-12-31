@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var subViewModel: SubViewModel
     @EnvironmentObject var notificationManager: NotificationManager
-    let version: String = "0.0.9"
+    let version: String = "0.9.9"
     let filter: String
     let order: String
     let budgetSelection: String
@@ -57,7 +57,7 @@ struct SettingsView: View {
                         .disabled(newCategory.isEmpty)
                 }
             }
-            Section() {
+            Section(footer: Text("The filter is engaged when a second gear appears in the preferences icon for this page.")) {
                 Picker(selection: $filterOption, label: Text("Filter by")) {
                     Text("All").tag("")
                     ForEach(subViewModel.categories, id: \.self) { category in

@@ -73,11 +73,12 @@ struct SuggestionView: View {
                         .padding([.leading, .trailing])
                     Spacer()
                 } else {
-                    VStack(alignment: .center) {
+                    VStack {
                         Image(systemName: "lightbulb.slash").font(.largeTitle)
                         Text("No Suggestions").font(.title)
                         Text("Suggestions to meet budget will show here.").frame(width: 200)
                     }
+                    .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
                         .padding()
                 }

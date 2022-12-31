@@ -18,7 +18,7 @@ struct NotificationView: View {
             VStack {
                 let urgent = subViewModel.determineUpcoming().filter { $0.value < 1}
                 if urgent.isEmpty {
-                    VStack(alignment: .center) {
+                    VStack {
                         Image(systemName: "tray.fill").font(.largeTitle)
                         Text("Inbox is Empty").font(.title)
                         Text("Most urgent subscriptions will show up here.").frame(width: 200)
