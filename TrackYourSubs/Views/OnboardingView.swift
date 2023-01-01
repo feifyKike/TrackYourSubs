@@ -13,23 +13,26 @@ struct OnboardingView: View {
     var body: some View {
         TabView {
             OnboardingPageView(
-                title: "Track Subscriptions",
+                title: "👣 Track Subscriptions",
                 description: "Store all your subscriptions locally on your device. No need to connect any accounts or store data in the cloud.",
                 image: "OnboardingImg1",
+                greeting: true,
                 showDismiss: false,
                 onboarding: $onboarding
             )
             OnboardingPageView(
-                title: "Organize & Budget",
+                title: "💰 Organize & Budget",
                 description: "Use budgeting and organizational features to keep track of your multi-dimensional list of expenses. ",
                 image: "OnboardingImg2",
+                greeting: false,
                 showDismiss: false,
                 onboarding: $onboarding
             )
             OnboardingPageView(
-                title: "Assess Visually",
+                title: "📊 Assess Visually",
                 description: "Visually inspect the big picture of your subscription portfolio.",
                 image: "OnboardingImg3",
+                greeting: false,
                 showDismiss: true,
                 onboarding: $onboarding
             )
