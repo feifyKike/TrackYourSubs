@@ -56,7 +56,9 @@ struct SuggestionView: View {
                             Button(action: {
                                 removeSub(subID: sub.id)
                             }, label: {
-                                Label("", systemImage: "minus.circle").foregroundColor(.red)
+                                Label("", systemImage: "minus.circle")
+                                    .foregroundColor(.red)
+                                    .font(.title3)
                             })
                             VStack(alignment: .leading) {
                                 Text(sub.name).font(.title3).fontWeight(.semibold)

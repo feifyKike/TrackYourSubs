@@ -502,7 +502,7 @@ class SubViewModel: ObservableObject {
     
     // Icon Badges
     func bellBadge() -> Bool {
-        let urgent = determineUpcoming().filter({ $0.value < 1})
+        let urgent = determineUpcoming().filter({ $0.value <= reminder })
     
         for valuePair in urgent {
             if !isPayed(sub: valuePair.0) {

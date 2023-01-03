@@ -103,7 +103,7 @@ struct ListView: View {
                                 ListRowView(sub: sub, currency: subViewModel.currency)
                             }.foregroundColor(.primary)
                             if (i != subViewModel.filterSubs().count - 1) {
-                                Divider().frame(height: 0.5).overlay(Color.secondary)
+                                Divider().overlay(Color.secondary)
                             }
                         }
                     }

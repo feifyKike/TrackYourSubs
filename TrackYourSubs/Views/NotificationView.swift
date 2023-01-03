@@ -16,7 +16,7 @@ struct NotificationView: View {
     var body: some View {
         NavigationView {
             VStack {
-                let urgent = subViewModel.determineUpcoming().filter { $0.value < 1}
+                let urgent = subViewModel.determineUpcoming().filter { $0.value <= subViewModel.reminder}
                 if urgent.isEmpty {
                     VStack {
                         Image(systemName: "tray.fill").font(.largeTitle)
@@ -28,8 +28,9 @@ struct NotificationView: View {
                         .padding()
                 } else {
                     ForEach(urgent.sorted { return $0.value < $1.value }, id:\.key) { key, value in
+                        let payed = subViewModel.isPayed(sub: key)
                         HStack {
-                            Image(systemName: subViewModel.isPayed(sub: key) ? "checkmark.circle" : "circle")
+                            Image(systemName: payed ? "checkmark.circle" : "circle")
                                 .font(.title3)
                                 .onTapGesture {
                                     withAnimation(.linear) {
@@ -38,7 +39,7 @@ struct NotificationView: View {
                                 }
                             VStack(alignment: .leading) {
                                 Text(key.name).font(.title3).fontWeight(.semibold)
-                                if subViewModel.isPayed(sub: key) {
+                                if payed {
                                     Text("Payed")
                                         .foregroundColor(.green)
                                 } else {
@@ -47,7 +48,7 @@ struct NotificationView: View {
                                 }
                             }
                             Spacer()
-                            Text(key.amount.formatted(.currency(code: subViewModel.currency)))
+                            Text(key.amount.formatted(.currency(code: subViewModel.currency))).font(.title3)
                         }
                             .padding()
                             .background(Color("Tiles"))
