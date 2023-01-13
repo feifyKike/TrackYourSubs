@@ -74,7 +74,7 @@ struct AddView: View {
         if subViewModel.notifications {
             notificationManager.scheduleNofitication(id: subViewModel.subscriptions.first(where: {$0.name == subName})?.id ?? UUID().uuidString,
                                                      title: subName,
-                                                     body: "The following subscription is due \(subViewModel.reminder > 0 ? "\(subViewModel.reminder == 1 ? "tomorrow" : "\(subViewModel.reminder) days")" : "today").",
+                                                     body: "Due \(subViewModel.reminder > 0 ? "\(subViewModel.reminder == 1 ? "tomorrow" : "in \(subViewModel.reminder) days")" : "today")",
                                                      date: notificationManager.nextPay(purchaseDate: subPurchaseDate, freq: subFreq),
                                                      remindBefore: subViewModel.reminder)
         }

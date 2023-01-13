@@ -93,7 +93,7 @@ class NotificationManager: ObservableObject {
     func scheduleAllNotifications(subs: [SubItem], remindBefore: Int) {
         for sub in subs {
             let title = sub.name
-            let body = "The following subscription is due \(remindBefore > 0 ? "\(remindBefore == 1 ? "tomorrow" : "\(remindBefore) days")" : "today")."
+            let body = "Due \(remindBefore > 0 ? "\(remindBefore == 1 ? "tomorrow" : "in \(remindBefore) days")" : "today")"
             let date = nextPay(purchaseDate: sub.purchaseDate, freq: sub.freq)
             scheduleNofitication(id: sub.id, title: title, body: body, date: date, remindBefore: remindBefore)
         }
